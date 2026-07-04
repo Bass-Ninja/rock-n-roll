@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { supabase } from "../lib/supabase"
 import RockCard from "../components/RockCard"
 import AddRock from "../components/AddRock"
+import { deleteRock } from "../lib/rocks/deleteRock"
 
 export default function Home() {
   const [rocks, setRocks] = useState([])
@@ -59,8 +60,15 @@ export default function Home() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {rocks.map((rock) => (
-              <RockCard key={rock.id} rock={rock} />
-            ))}
+                <RockCard
+                    key={rock.id}
+                    rock={rock}
+                    onDelete={async (rock) => {
+                    await deleteRock(rock)
+                    fetchRocks()
+                    }}
+                />
+                ))}
           </div>
         )}
 
