@@ -19,21 +19,30 @@ export default function AddRock({ onAdded }) {
 
   // 📷 Start camera
   async function startCamera() {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: "environment" }
-      })
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: {
+        facingMode: { ideal: "environment" }
+      },
+      audio: false
+    })
 
-      videoRef.current.srcObject = stream
-      streamRef.current = stream
-      videoRef.current?.play()
+    setCameraOpen(true)
 
-      setCameraOpen(true)
-    } catch (err) {
-      console.error(err)
-      alert("Не удалось открыть камеру")
-    }
+    // wait for render
+    setTimeout(() => {
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream
+        videoRef.current.play()
+      }
+    }, 100)
+
+    streamRef.current = stream
+  } catch (err) {
+    console.error(err)
+    alert("Камера недоступна. Проверьте разрешения.")
   }
+}
 
   // 📸 Take photo
   function takePhoto() {
@@ -164,6 +173,8 @@ export default function AddRock({ onAdded }) {
         <video
           ref={videoRef}
           autoPlay
+            playsInline
+            muted
           className="flex-1 object-cover"
         />
 
